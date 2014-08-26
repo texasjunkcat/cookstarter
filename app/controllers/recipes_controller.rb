@@ -21,6 +21,8 @@ class RecipesController < ApplicationController
   def create
     @recipe = Recipe.new(recipe_params)
 
+    # This includes json format used to call API's
+
     respond_to do |format|
       if @recipe.save
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
@@ -48,7 +50,7 @@ class RecipesController < ApplicationController
   def destroy
     @recipe.destroy
     respond_to do |format|
-      format.html { redirect_to recipes_url, notice: 'Recipe was successfully deleted.' }
+      format.html { redirect_to recipes_url, notice: 'Recipe has been removed.' }
       format.json { head :no_content }
     end
   end
