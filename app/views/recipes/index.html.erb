@@ -3,7 +3,9 @@
 <table>
   <thead>
     <tr>
+      <th>Image</th>
       <th>Title</th>
+      <th>User</th>
       <th>Description</th>
       <th>Ingredients</th>
       <th>Instructions</th>
@@ -15,19 +17,25 @@
   <tbody>
     <% @recipes.each do |recipe| %>
       <tr>
+        <td><%= image_tag recipe.image.url(:medium) %></td>
         <td><%= recipe.title %></td>
+        <td><%= recipe.user.email if recipe.user %></td>
         <td><%= recipe.description %></td>
         <td><%= recipe.ingredients %></td>
         <td><%= recipe.instructions %></td>
         <td><%= recipe.source %></td>
-        <td><%= link_to 'Read', recipe %></td>
-        <td><%= link_to 'Update', edit_recipe_path(recipe) %></td>
-        <td><%= link_to 'Remove', recipe, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Read', recipe_path(recipe) %></td>
+            
+            <% if recipe.user == current_user %>
+              <%= link_to 'Edit', edit_recipe_path(recipe) %>
+              <%= link_to 'Remove', recipe, method: :delete, data: { confirm: 'Are you sure?' } %>
+            <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
-
+<% if user_signed_in? %>
 <%= link_to 'New Recipe', new_recipe_path %>
+<% end %>

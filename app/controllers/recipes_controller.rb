@@ -1,5 +1,8 @@
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
+  before_action :correct_user, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!, except: [:index, :show]
+
 
 
   def index
@@ -12,14 +15,14 @@ class RecipesController < ApplicationController
 
 
   def new
-    @recipe = Recipe.new
+    @recipe = current_user.recipes.build
   end
 
   def edit
   end
 
   def create
-    @recipe = Recipe.new(recipe_params)
+    @recipe = current_user.recipes.build(recipe_params)
 
     # This includes json format used to call API's
 
@@ -61,8 +64,13 @@ class RecipesController < ApplicationController
       @recipe = Recipe.find(params[:id])
     end
 
+    def correct_user
+      @recipe = current_user.recipes.find_by(id: params[:id])
+      redirect_to recipes_path, notice: "Not authorized to edit this recipe." if @recipe.nil?
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def recipe_params
-      params.require(:recipe).permit(:title, :description, :ingredients, :instructions, :source)
+      params.require(:recipe).permit(:image, :title, :description, :ingredients, :instructions, :source)
     end
 end
